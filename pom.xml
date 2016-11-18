@@ -2,11 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.knpj</groupId>
-    <artifactId>servlet</artifactId>
+    <artifactId>Quizowanie</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>servlet Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>Quizowanie project</name>
 
     <dependencies>
         <dependency>
