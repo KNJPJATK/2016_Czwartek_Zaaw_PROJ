@@ -40,8 +40,6 @@
 
     <properties>
         <db.name>quizowanie</db.name>
-        <db.username>domino</db.username>
-        <db.password>domino</db.password>
         <db.dropDbSql>DROP DATABASE IF EXISTS ${db.name}</db.dropDbSql>
         <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
     </properties>
