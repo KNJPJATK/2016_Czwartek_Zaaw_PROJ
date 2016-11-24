@@ -42,6 +42,7 @@
         <db.name>quizowanie</db.name>
         <db.dropDbSql>DROP DATABASE IF EXISTS ${db.name}</db.dropDbSql>
         <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
+        <db.mvn_phase>test</db.mvn_phase>
     </properties>
 
     <profiles>
@@ -81,7 +82,7 @@
                         <executions>
                             <execution>
                                 <id>drop-table</id>
-                                <phase>install</phase>
+                                <phase>${db.mvn_phase}</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
@@ -93,7 +94,7 @@
 
                             <execution>
                                 <id>create-schema</id>
-                                <phase>install</phase>
+                                <phase>${db.mvn_phase}</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
