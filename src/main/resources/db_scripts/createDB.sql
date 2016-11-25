@@ -29,7 +29,7 @@ CREATE TABLE vuser (
 );
 
 CREATE TABLE quest_quiz (
-  	id INT NOT NULL,
+  id INT NOT NULL,
 	question_id INT NOT NULL,
 	quiz_id INT NOT NULL,
 	CONSTRAINT quest_guiz_pk PRIMARY KEY (id),
