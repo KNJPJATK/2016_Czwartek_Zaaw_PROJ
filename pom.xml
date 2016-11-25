@@ -7,6 +7,21 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Quizowanie project</name>
 
+    <profiles>
+        <profile>
+            <id>postgres</id>
+            <properties>
+                <db.driver-class>org.postgresql.Driver</db.driver-class>
+                <db.url>jdbc:postgresql://localhost:5432/quizowanie</db.url>
+                <db.user>postgres</db.user>
+                <db.password>postgres</db.password>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -34,5 +49,11 @@
     </dependencies>
     <build>
         <finalName>servlet</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

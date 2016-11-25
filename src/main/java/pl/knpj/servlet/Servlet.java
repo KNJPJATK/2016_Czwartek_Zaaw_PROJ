@@ -1,7 +1,11 @@
 package pl.knpj.servlet;
 
+import pl.knpj.servlet.config.Config;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +22,7 @@ public class Servlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter pw = resp.getWriter();
-		pw.println("Hello World!");
+		pw.println(Config.getInstance());
 	}
 
 }
