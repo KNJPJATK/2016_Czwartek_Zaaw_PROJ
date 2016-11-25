@@ -41,9 +41,10 @@
     <properties>
         <db.name>quizowanie</db.name>
         <db.dropDbSql>DROP DATABASE IF EXISTS ${db.name}</db.dropDbSql>
+        <db.createDb>CREATE DATABASE ${db.name}</db.createDb>
         <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
         <db.mvn_phase>test</db.mvn_phase>
-        <db.createDb>CREATE DATABASE ${db.name}</db.createDb>
+        <db.postgres.baseUrl>jdbc:postgresql://localhost:5432/</db.postgres.baseUrl>
     </properties>
 
     <profiles>
@@ -146,13 +147,14 @@
 
                         <configuration>
                             <driver>org.postgresql.Driver</driver>
-                            <url>jdbc:postgresql://localhost:5432/</url>
+                            <url>${db.postgres.baseUrl}</url>
                             <username>${db.username}</username>
                             <password>${db.password}</password>
                             <settingsKey>sensibleKey</settingsKey>
                         </configuration>
 
                         <!--what will be executed-->
+                        <!--drop old database if exists-->
                         <executions>
                             <execution>
                                 <id>drop-table</id>
@@ -161,13 +163,13 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <url>jdbc:postgresql://localhost:5432/</url>
+                                    <url>${db.postgres.baseUrl}</url>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>${db.dropDbSql}</sqlCommand>
                                 </configuration>
                             </execution>
 
-                            <!--wywalona ze skryptu linijka o tworzeniu bazy, do testow czy w ogole dziala-->
+                            <!--create new database-->
                             <execution>
                                 <id>create-db</id>
                                 <phase>${db.mvn_phase}</phase>
@@ -175,12 +177,13 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <url>jdbc:postgresql://localhost:5432/</url>
+                                    <url>${db.postgres.baseUrl}</url>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>${db.createDb}</sqlCommand>
                                 </configuration>
                             </execution>
 
+                            <!--create tables-->
                             <execution>
                                 <id>create-schema</id>
                                 <phase>${db.mvn_phase}</phase>
@@ -188,8 +191,7 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <!--z tym nie dziala, a bez tego tworzy tabele w bazie postgres-->
-                                    <!--<url>jdbc:postgressql://localhost:5432/</url>-->
+                                    <url>${db.postgres.baseUrl}${db.name}</url>
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>${db.createSchemaFilePath}</srcFile>
