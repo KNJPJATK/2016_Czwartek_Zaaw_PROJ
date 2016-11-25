@@ -4,24 +4,17 @@
                               https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
     <profiles>
-       <!-- <profile>
-            <id>postgres-props</id>
+        <profile>
+            <id>db-props</id>
             <properties>
                 <db.username>postgres</db.username>
                 <db.password>postgres</db.password>
-            </properties>
-        </profile>-->
-        <profile>
-            <id>mysql-props</id>
-            <properties>
-                <db.username>root</db.username>
-                <db.password>password</db.password>
             </properties>
         </profile>
     </profiles>
 
     <activeProfiles>
-        <activeProfile>mysql-props</activeProfile>
+        <activeProfile>db-props</activeProfile>
     </activeProfiles>
 
 </settings>
