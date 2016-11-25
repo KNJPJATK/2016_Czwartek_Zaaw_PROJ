@@ -41,8 +41,10 @@
     <properties>
         <db.name>quizowanie</db.name>
         <db.dropDbSql>DROP DATABASE IF EXISTS ${db.name}</db.dropDbSql>
+        <db.createDb>CREATE DATABASE ${db.name}</db.createDb>
         <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
         <db.mvn_phase>test</db.mvn_phase>
+        <db.postgres.baseUrl>jdbc:postgresql://localhost:5432/</db.postgres.baseUrl>
     </properties>
 
     <profiles>
@@ -93,12 +95,26 @@
                             </execution>
 
                             <execution>
-                                <id>create-schema</id>
+                                <id>create-db</id>
                                 <phase>${db.mvn_phase}</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>${db.createDb}</sqlCommand>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>create-schema</id>
+                                <phase>${db.mvn_phase}</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+
+                                <configuration>
+                                    <url>jdbc:mysql://localhost:3306/${db.name}</url>
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>${db.createSchemaFilePath}</srcFile>
@@ -110,6 +126,84 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>postgresql</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>9.4.1211.jre7</version>
+                            </dependency>
+                        </dependencies>
+
+                        <configuration>
+                            <driver>org.postgresql.Driver</driver>
+                            <url>${db.postgres.baseUrl}</url>
+                            <username>${db.username}</username>
+                            <password>${db.password}</password>
+                            <settingsKey>sensibleKey</settingsKey>
+                        </configuration>
+
+                        <!--what will be executed-->
+                        <!--drop old database if exists-->
+                        <executions>
+                            <execution>
+                                <id>drop-table</id>
+                                <phase>${db.mvn_phase}</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${db.postgres.baseUrl}</url>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>${db.dropDbSql}</sqlCommand>
+                                </configuration>
+                            </execution>
+
+                            <!--create new database-->
+                            <execution>
+                                <id>create-db</id>
+                                <phase>${db.mvn_phase}</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${db.postgres.baseUrl}</url>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>${db.createDb}</sqlCommand>
+                                </configuration>
+                            </execution>
+
+                            <!--create tables-->
+                            <execution>
+                                <id>create-schema</id>
+                                <phase>${db.mvn_phase}</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${db.postgres.baseUrl}${db.name}</url>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>${db.createSchemaFilePath}</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
     <build>
