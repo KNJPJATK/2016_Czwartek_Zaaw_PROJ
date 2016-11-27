@@ -44,20 +44,20 @@
         <db.createDb>CREATE DATABASE ${db.name}</db.createDb>
         <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
         <db.mvn_phase>test</db.mvn_phase>
-
-        <db.mysql.baseUrl>jdbc:mysql://127.0.0.1:3306/</db.mysql.baseUrl>
-        <!--<![CDATA is used to escape all xml special characters - it says that this is character data-->
-        <!--unfortunately there is issue with timezone an mysql so we need to set it manually-->
-        <db.mysql.timezone_params>
-            <![CDATA[?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC]]>
-        </db.mysql.timezone_params>
-
-        <db.postgres.baseUrl>jdbc:postgresql://localhost:5432/</db.postgres.baseUrl>
     </properties>
 
     <profiles>
         <profile>
             <id>mysql</id>
+
+            <properties>
+                <db.mysql.baseUrl>jdbc:mysql://127.0.0.1:3306/</db.mysql.baseUrl>
+                <!--<![CDATA is used to escape all xml special characters - it says that this is character data-->
+                <!--unfortunately there is issue with timezone an mysql so we need to set it manually-->
+                <db.mysql.timezone_params>
+                    <![CDATA[?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC]]>
+                </db.mysql.timezone_params>
+            </properties>
 
             <build>
                 <plugins>
@@ -134,6 +134,10 @@
 
         <profile>
             <id>postgresql</id>
+
+            <properties>
+                <db.postgres.baseUrl>jdbc:postgresql://localhost:5432/</db.postgres.baseUrl>
+            </properties>
 
             <build>
                 <plugins>
