@@ -5,7 +5,7 @@
 
     <profiles>
         <profile>
-            <id>db-props</id>
+            <id>base-profile</id>
             <properties>
                 <db.username>postgres</db.username>
                 <db.password>postgres</db.password>
