@@ -80,7 +80,7 @@
                                 ${db.mysql.baseUrl}${db.mysql.timezone_params}
                             </url>
 
-                            <username>${db.username}</username>
+                            <username>${db.user}</username>
                             <password>${db.password}</password>
                             <settingsKey>sensibleKey</settingsKey>
                         </configuration>
@@ -157,7 +157,7 @@
                         <configuration>
                             <driver>org.postgresql.Driver</driver>
                             <url>${db.postgres.baseUrl}</url>
-                            <username>${db.username}</username>
+                            <username>${db.user}</username>
                             <password>${db.password}</password>
                             <settingsKey>sensibleKey</settingsKey>
                         </configuration>
