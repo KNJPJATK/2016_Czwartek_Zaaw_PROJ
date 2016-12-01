@@ -15,14 +15,10 @@ public class UserDAO extends BaseDAO {
                     "FROM \"user\" where username = ?";
 
     public User getUserByUsername(String username) throws SQLException {
-        ResultSet rs = executeStatement(GET_USER_USERNAME_SQL, "dominik");
-
-        try {
+        try(ResultSet rs = executeStatement(GET_USER_USERNAME_SQL, username)) {
             return getUserFromResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            rs.close();
         }
         return null;
     }
