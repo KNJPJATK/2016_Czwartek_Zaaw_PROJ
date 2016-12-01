@@ -1,6 +1,7 @@
 package pl.knpj.servlet.dao;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import pl.knpj.servlet.model.User;
 
@@ -20,6 +21,7 @@ public class UserDAOTest {
         userDAO = new UserDAO();
     }
 
+    @Ignore("Should be IT test - now it is dependent on db data")
     @Test
     public void selectExistingUserTest() throws SQLException {
         String username = "dominik";
