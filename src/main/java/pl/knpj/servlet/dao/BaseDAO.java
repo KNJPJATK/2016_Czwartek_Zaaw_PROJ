@@ -35,11 +35,26 @@ public abstract class BaseDAO {
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i+1, params[i]);
             }
-
             return stmt.executeQuery();
         } finally {
             if (con != null) {
                 con.close();
+            }
+        }
+    }
+
+    protected void executeUpdate (String sql, Object... params) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = makeConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i+1, params[i]);
+            }
+            stmt.executeUpdate();
+        } finally {
+            if (connection != null) {
+                connection.close();
             }
         }
     }
