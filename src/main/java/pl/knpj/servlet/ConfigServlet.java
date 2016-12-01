@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns="/api")
-public class Servlet extends HttpServlet {
+@WebServlet(urlPatterns="/config")
+public class ConfigServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -2842975407425164763L;
 	
