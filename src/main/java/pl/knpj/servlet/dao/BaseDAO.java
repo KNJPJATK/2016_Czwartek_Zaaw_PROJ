@@ -1,23 +1,23 @@
 package pl.knpj.servlet.dao;
 
-import org.postgresql.Driver;
+import org.apache.commons.dbutils.DbUtils;
 import pl.knpj.servlet.config.Config;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Created by rpi on 24.11.16.
+ * Base DAO class to data from database
  */
 public abstract class BaseDAO {
 
+    private static final Logger LOGGER = Logger.getLogger(BaseDAO.class.getName());
     private final Config config = Config.getInstance();
 
-    private Connection makeConnection() throws SQLException {
-        try {
-            Class.forName(config.getProperty("db.driver-class"));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    private Connection makeConnection() throws SQLException, ClassNotFoundException {
+        Class.forName(config.getProperty("db.driver-class"));
+
         Connection res =
                 DriverManager.getConnection(
                         config.getProperty("db.url"),
@@ -27,36 +27,54 @@ public abstract class BaseDAO {
         return res;
     }
 
-    protected ResultSet executeStatement(String sql, Object... params) throws SQLException {
+    /**
+     * Method used to execute queries on database and parsing data to specific dao class. Parsing is done in subclass.
+     *
+     * @param sql db query to execute by prepared statement
+     * @param params parameters for query
+     * @return retrieved and parsed object from db
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    protected Object executeQuery(String sql, Object... params) throws SQLException, ClassNotFoundException {
         Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
         try {
             con = makeConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i+1, params[i]);
+                stmt.setObject(i + 1, params[i]);
             }
-            return stmt.executeQuery();
+
+            LOGGER.log(Level.INFO, stmt.toString());
+
+            rs = stmt.executeQuery();
+
+            return parseResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+
+            throw e;
+        } catch (ClassNotFoundException e) {
+
+            throw e;
         } finally {
-            if (con != null) {
-                con.close();
-            }
+            DbUtils.closeQuietly(rs);
+            DbUtils.closeQuietly(stmt);
+            DbUtils.closeQuietly(con);
         }
     }
 
-    protected void executeUpdate (String sql, Object... params) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = makeConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i+1, params[i]);
-            }
-            stmt.executeUpdate();
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
-    }
-
+    /**
+     * Method to parse object from {@link ResultSet}
+     *
+     * @param rs result set to parse
+     * @return parsed object
+     * @throws SQLException
+     */
+    protected abstract Object parseResultSet(ResultSet rs) throws SQLException;
 }

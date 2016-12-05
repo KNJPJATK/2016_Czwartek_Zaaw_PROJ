@@ -24,10 +24,10 @@ public class UserDAOTest {
     @Ignore("Should be IT test - now it is dependent on db data")
     @Test
     public void selectExistingUserTest() throws SQLException {
-        String username = "dominik";
-        User result = userDAO.getUserByUsername(username);
-        assertNotNull(result);
-        assertEquals(username, result.getUsername());
+//        String username = "dominik";
+//        User result = userDAO.getUserByUsername(username);
+//        assertNotNull(result);
+//        assertEquals(username, result.getUsername());
     }
 
 }

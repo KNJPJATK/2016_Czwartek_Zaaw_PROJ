@@ -6,38 +6,60 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by rpi on 24.11.16.
+ * DAO class for retrieving data from vuser table
  */
 public class UserDAO extends BaseDAO {
 
-    private static final String GET_USER_USERNAME_SQL =
-            "SELECT id, username, \"password\" " +
-                    "FROM \"user\" where username = ?";
+    private static final String ID_COLUMN = "id";
+    private static final String USERNAME_COLUMN = "username";
+    private static final String PASSWORD_COLUMN = "password";
 
-    public User getUserByUsername(String username) throws SQLException {
-        try(ResultSet rs = executeStatement(GET_USER_USERNAME_SQL, username)) {
-            return getUserFromResultSet(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private static final String GET_USER_USERNAME_SQL =
+            "SELECT id as 'id', username as 'username', password as 'password' " +
+                    "FROM vuser where username = ?";
+
+    /**
+     * Gets user from db by username.
+     *
+     * @param username
+     * @return user from database, or null if not found
+     */
+    public User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
+
+        return (User) executeQuery(GET_USER_USERNAME_SQL, username);
     }
 
-    public boolean checkUserCredentials(String username, String password) throws SQLException {
+
+    /**
+     * This method retrieves user from db and check if password matches with this stored in db.
+     *
+     * @param username username to check
+     * @param password password of usr to check
+     * @return true if username and password matches, false otherwise
+     */
+    public boolean isUsernameMatchingPassword(String username, String password) throws SQLException, ClassNotFoundException {
         User user = getUserByUsername(username);
         if (user == null) {
             return false;
         }
+
         return (user.getPassword().equals(password));
     }
 
-    private User getUserFromResultSet(ResultSet rs) throws SQLException {
-        rs.next();
+    /**
+     * {@inheritDoc}
+     */
+    protected Object parseResultSet(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+            return null;
+        }
 
-        long id = rs.getLong(1);
-        String username = rs.getString(2);
-        String password = rs.getString(3);
+        long id = rs.getLong(ID_COLUMN);
+        String username = rs.getString(USERNAME_COLUMN);
+        String password = rs.getString(PASSWORD_COLUMN);
 
-        return new User(id, username, password);
+        User user = new User(id, username, password);
+
+        return user;
     }
 }
