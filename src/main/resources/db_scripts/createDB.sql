@@ -13,14 +13,16 @@ CREATE TABLE answer (
 
 CREATE TABLE correct_answer (
 	id INT PRIMARY KEY,
-	q_id FOREIGN KEY REFERENCES question(id), 
-	a_id FOREIGN KEY REFERENCES answer(id)
+	q_id INT, 
+	a_id INT,
+	FOREIGN KEY (q_id) REFERENCES question(id),
+	FOREIGN KEY (a_id) REFERENCES answer(id)
 );
 
 CREATE TABLE quiz (
 	id INT NOT NULL,
 	name VARCHAR(128) NOT NULL,
-	maxTime int NOT NULL,
+	max_time int NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -59,11 +61,39 @@ ALTER TABLE quest_ans
 
 
 INSERT INTO question(id, title, description) VALUES (1, 'What does the fox say?', 'Some description');
+INSERT INTO question(id, title, description) VALUES (2, 'What is the best programming language?', "Don't think too much!");
+INSERT INTO question(id, title, description) VALUES (3, 'How many primitive data types are in Java?', 'You know it!');
 
-INSERT INTO answer(id, text, is_correct) VALUES (1, 'Hatee-hatee-hatee-ho', true);
-INSERT INTO answer(id, text, is_correct) VALUES (2, 'Fox does not say anything', false);
+INSERT INTO answer(id, text) VALUES (1, 'Hatee-hatee-hatee-ho');
+INSERT INTO answer(id, text) VALUES (2, 'Fox does not say anything');
+INSERT INTO answer(id, text) VALUES (3, 'Java!');
+INSERT INTO answer(id, text) VALUES (4, 'CeKratka!');
+INSERT INTO answer(id, text) VALUES (5, 'Asembler'); 
+INSERT INTO answer(id, text) VALUES (6, '6');
+INSERT INTO answer(id, text) VALUES (7, '7');
+INSERT INTO answer(id, text) VALUES (8, '8');
+INSERT INTO answer(id, text) VALUES (9, '9');
 
-INSERT INTO quiz(id, name, maxTime) VALUES (1, 'Fox quiz', 12);
+INSERT INTO quiz(id, name, max_time) VALUES (1, 'Fox quiz', 12);
+INSERT INTO quiz(id, name, max_time) VALUES (2, 'Java quiz', 30);
 
 INSERT into quest_ans(id, question_id, answer_id) VALUES (1, 1, 1);
 INSERT into quest_ans(id, question_id, answer_id) VALUES (2, 1, 2);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (3, 2, 3);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (4, 2, 4);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (5, 2, 5);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (6, 3, 6);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (7, 3, 7);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (8, 3, 8);
+INSERT into quest_ans(id, question_id, answer_id) VALUES (9, 3, 9);
+
+INSERT into correct_answer(id, q_id, a_id) VALUES (1, 1, 1);
+INSERT into correct_answer(id, q_id, a_id) VALUES (2, 2, 3);
+INSERT into correct_answer(id, q_id, a_id) VALUES (3, 3, 8);
+
+INSERT INTO quest_quiz (id, question_id, quiz_id) VALUES (1, 1, 1);
+INSERT INTO quest_quiz (id, question_id, quiz_id) VALUES (2, 2, 2);
+INSERT INTO quest_quiz (id, question_id, quiz_id) VALUES (3, 3, 2);
+
+
+
