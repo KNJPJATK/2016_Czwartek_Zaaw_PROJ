@@ -3,19 +3,23 @@ package pl.knpj.servlet.model;
 import java.util.*;
 
 /**
- * Created by vadikms on 29.11.16.
+ * Question POJO
  */
 public class Question {
+
     private Long id;
     private String title;
     private String description;
-    private Collection<Answer> correctAnswers;
+    private Collection<Answer> answers;
 
-    public Question(Long id, String title, String description, Collection<Answer> correctAnswers) {
+    public Question () {
+    }
+
+    public Question(Long id, String title, String description, Collection<Answer> answers) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.correctAnswers = correctAnswers;
+        this.answers = answers;
     }
 
     public Long getId() {
@@ -30,8 +34,8 @@ public class Question {
         return description;
     }
 
-    public Collection<Answer> getCorrectAnswer() {
-        return correctAnswers;
+    public Collection<Answer> getAnswers() {
+        return answers;
     }
 
     public void setId(Long id) {
@@ -46,18 +50,30 @@ public class Question {
         this.description = description;
     }
 
+    public void setAnswers(Collection<Answer> answers) {
+        this.answers = answers;
+    }
+
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        Iterator iterator = correctAnswers.iterator();
-        while (iterator.hasNext()) {
-            builder.append(iterator.next().toString()).append(" ");
+        StringBuilder builder = new StringBuilder("\'Is empty\'");
+        if(answers != null){
+            builder.delete(0, builder.length());
+            Iterator iterator = answers.iterator();
+            if (iterator.hasNext()){
+                builder.append(iterator.next().toString());
+            }
+            while (iterator.hasNext()) {
+                builder.append(", ");
+                builder.append(iterator.next().toString());
+            }
+
         }
         return "Question{" +
                 "id=" + id +
                 ", title = '" + title + '\'' +
                 ", description = '" + description + '\'' +
-                ", correctAnswers = " + builder.toString() +
+                ", answers = " + builder.toString() +
                 '}';
     }
 }
