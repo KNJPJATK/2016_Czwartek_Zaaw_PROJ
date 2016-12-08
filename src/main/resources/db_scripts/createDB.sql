@@ -8,8 +8,13 @@ CREATE TABLE question (
 CREATE TABLE answer (
 	id INT NOT NULL,
 	text VARCHAR(256) NOT NULL,
-	is_correct BOOLEAN NOT NULL,
 	PRIMARY KEY (id)
+);
+
+CREATE TABLE correct_answer (
+	id INT PRIMARY KEY,
+	q_id FOREIGN KEY REFERENCES question(id), 
+	a_id FOREIGN KEY REFERENCES answer(id)
 );
 
 CREATE TABLE quiz (
