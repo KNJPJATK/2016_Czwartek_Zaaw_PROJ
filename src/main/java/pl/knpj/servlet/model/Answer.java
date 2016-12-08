@@ -1,16 +1,17 @@
 package pl.knpj.servlet.model;
 
-
-import java.util.Collection;
-
 /**
- * Created by vadikms on 29.11.16.
+ * Answer POJO
  */
 public class Answer {
+
     private Long id;
     private String text;
 
-    public Answer(Long id, String text/*, Collection<Question> questions*/) {
+    public Answer(){
+    }
+
+    public Answer (Long id, String text) {
         this.id = id;
         this.text = text;
     }
@@ -30,7 +31,6 @@ public class Answer {
     public void setText(String text) {
         this.text = text;
     }
-
 
     @Override
     public String toString() {
