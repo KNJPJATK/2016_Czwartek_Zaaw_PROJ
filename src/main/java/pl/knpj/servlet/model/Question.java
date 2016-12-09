@@ -10,18 +10,16 @@ public class Question {
     private Long id;
     private String title;
     private String description;
-    private Collection<Answer> allAnswers;
-    private Collection<Answer> correctAnswers;
+    private Collection<QuestionAnswer> answers;
 
     public Question () {
     }
 
-    public Question(Long id, String title, String description, Collection<Answer> allAnswers, Collection<Answer> correctAnswers) {
+    public Question(Long id, String title, String description, Collection<QuestionAnswer> answers) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.allAnswers = allAnswers;
-        this.correctAnswers = correctAnswers;
+        this.answers = answers;
     }
 
     public Long getId() {
@@ -36,12 +34,8 @@ public class Question {
         return description;
     }
 
-    public Collection<Answer> getAllAnswers() {
-        return allAnswers;
-    }
-
-    public Collection<Answer> getCorrectAnswers() {
-        return correctAnswers;
+    public Collection<QuestionAnswer> getAnswers() {
+        return answers;
     }
 
     public void setId(Long id) {
@@ -56,44 +50,23 @@ public class Question {
         this.description = description;
     }
 
-    public void setAllAnswers(Collection<Answer> allAnswers) {
-        this.allAnswers = allAnswers;
-    }
-
-    public void setCorrectAnswers(Collection<Answer> correctAnswers) {
-        this.correctAnswers = correctAnswers;
+    public void setAnswers(Collection<QuestionAnswer> answers) {
+        this.answers = answers;
     }
 
     @Override
     public String toString() {
 
-        StringBuilder buildAllAnswers = new StringBuilder("\'Is empty\'");
-        if(allAnswers != null &&
-                ! allAnswers.isEmpty())
+        StringBuilder buildAnswers = new StringBuilder("\'Is empty\'");
+        if(answers != null &&
+                ! answers.isEmpty())
         {
-            buildAllAnswers.delete(0, buildAllAnswers.length());
-            Iterator allAnswersIterator = allAnswers.iterator();
-            if (allAnswersIterator.hasNext()){
-                buildAllAnswers.append(allAnswersIterator.next().toString());
-            }
-            while (allAnswersIterator.hasNext()) {
-                buildAllAnswers.append(", ");
-                buildAllAnswers.append(allAnswersIterator.next().toString());
-            }
-        }
-
-        StringBuilder buildCorrectAnswers = new StringBuilder("\'Is empty\'");
-        if(correctAnswers != null &&
-                ! correctAnswers.isEmpty())
-        {
-            buildCorrectAnswers.delete(0, buildCorrectAnswers.length());
-            Iterator correctAnswersIterator = correctAnswers.iterator();
-            if (correctAnswersIterator.hasNext()){
-                buildCorrectAnswers.append(correctAnswersIterator.next().toString());
-            }
-            while (correctAnswersIterator.hasNext()) {
-                buildCorrectAnswers.append(", ");
-                buildCorrectAnswers.append(correctAnswersIterator.next().toString());
+            buildAnswers.delete(0, buildAnswers.length());
+            Iterator answersIterator = answers.iterator();
+            buildAnswers.append(answersIterator.next().toString());
+            while (answersIterator.hasNext()) {
+                buildAnswers.append(", ");
+                buildAnswers.append(answersIterator.next().toString());
             }
         }
 
@@ -101,8 +74,7 @@ public class Question {
                 "id=" + id +
                 ", title = '" + title + '\'' +
                 ", description = '" + description + '\'' +
-                ", allAnswers : " + buildAllAnswers.toString() +
-                ", correctAnswers : " + buildCorrectAnswers.toString() +
+                ", answers : " + buildAnswers.toString() +
                 '}';
     }
 }
