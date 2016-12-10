@@ -116,7 +116,7 @@ public abstract class BaseDAO {
      * @throws SQLException
      * @throws ClassNotFoundException no database driver found
      */
-    protected Object getObject (String sql, Object... params) throws SQLException, ClassNotFoundException {
+    protected Object getObjectFromQuery (String sql, Object... params) throws SQLException, ClassNotFoundException {
         ResultSet rs = executeQuery(sql, params);
         return parseResultSet(rs);
     }

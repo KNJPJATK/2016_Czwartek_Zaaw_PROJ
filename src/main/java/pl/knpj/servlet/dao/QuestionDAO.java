@@ -6,7 +6,6 @@ import pl.knpj.servlet.model.QuestionAnswer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * DAO class for retrieving data from question table
@@ -27,8 +26,8 @@ public class QuestionDAO extends BaseDAO {
             "INSERT INTO \"question_answer\" (id, question_id, answer_id, is_correct) values (?,?,?,?)";
     private static final String UPDATE_QUESTION_SQL =
             "UPDATE \"question\" SET title = ?, description = ? WHERE id = ?";
-    private static final String UPDATE_QUESTION_ANSWER_SQL =
-            "UPDATE \"question_answer\" SET answer_id = ?, is_correct = ? WHERE question_id = ?";
+    private static final String DELETE_QUESTION_ANSWER_SQL =
+            "DELETE FROM \"question_answer\" WHERE question_id = ?";
 
 
     /**
@@ -96,11 +95,11 @@ public class QuestionDAO extends BaseDAO {
      */
     public void createQuestion (Question question) throws SQLException, ClassNotFoundException{
         executeUpdate(CREATE_QUESTION_SQL, question.getId(), question.getTitle(), question.getDescription());
-        Iterator iterator = question.getAnswers().iterator();
-        while (iterator.hasNext()) {
-            QuestionAnswer answer = (QuestionAnswer) iterator.next();
+
+        for(QuestionAnswer answer : question.getAnswers()){
             executeUpdate(CREATE_QUESTION_ANSWER_SQL, answer.getId(), answer.getQuestionId(), answer.getAnswerId(), answer.isCorrect());
         }
+
     }
 
     /**
@@ -114,11 +113,16 @@ public class QuestionDAO extends BaseDAO {
      * @throws ClassNotFoundException no database driver found
      */
     public void updateQuestion (String title, String description, Long id, Collection<QuestionAnswer> answers) throws SQLException, ClassNotFoundException{
+
         executeUpdate(UPDATE_QUESTION_SQL, title, description, id);
-        Iterator iterator = answers.iterator();
-        while (iterator.hasNext()){
-            QuestionAnswer answer = (QuestionAnswer) iterator.next();
-            executeUpdate(UPDATE_QUESTION_ANSWER_SQL, answer.getId(), answer.isCorrect(), id);
+
+        executeUpdate(DELETE_QUESTION_ANSWER_SQL, id);
+
+        for (QuestionAnswer answer : answers){
+
+            executeUpdate(CREATE_QUESTION_ANSWER_SQL, answer.getId(), answer.getQuestionId(), answer.getAnswerId(), answer.isCorrect());
+
         }
+
     }
 }
