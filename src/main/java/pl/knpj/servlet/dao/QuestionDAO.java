@@ -1,64 +1,85 @@
 package pl.knpj.servlet.dao;
 
-import pl.knpj.servlet.model.Answer;
 import pl.knpj.servlet.model.Question;
+import pl.knpj.servlet.model.QuestionAnswer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 
 /**
- * Created by vadikms on 29.11.16.
+ * DAO class for retrieving data from question table
  */
-public class QuestionDAO extends BaseDAO{
+public class QuestionDAO extends BaseDAO {
+
+    private static final String ID_COLUMN = "id";
+    private static final String TITLE_COLUMN = "title";
+    private static final String DESCRIPTION_COLUMN = "description";
 
     private static final String GET_QUESTION_SQL =
             "SELECT id, title, description " +
-                    "FROM \"questions\" WHERE title = ?";
-    private static final String GET_ANSWERS_SQL =
-            "SELECT id, text FROM \"answers\" WHERE forKey = ?";
+                    "FROM \"question\" WHERE title = ?";
     private static final String CREATE_QUESTION_SQL =
-            "INSERT INTO \"questions\" (id, title, description)" +
+            "INSERT INTO \"question\" (id, title, description)" +
             "values(?,?,?)";
-    private static final String CREATE_ANSWER_SQL =
-            "INSERT INTO \"answers\" (id, text, forKey) values (?,?,?)";
+    private static final String CREATE_QUESTION_ANSWER_SQL =
+            "INSERT INTO \"question_answer\" (id, question_id, answer_id, is_correct) values (?,?,?,?)";
     private static final String UPDATE_QUESTION_SQL =
-            "UPDATE \"questions\" SET title = ?, description = ? WHERE id = ?";
+            "UPDATE \"question\" SET title = ?, description = ? WHERE id = ?";
+    private static final String UPDATE_QUESTION_ANSWER_SQL =
+            "UPDATE \"question_answer\" SET answer_id = ?, is_correct = ? WHERE question_id = ?";
 
-    private Question getQuestionFromRS (ResultSet rs) throws SQLException {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Object parseResultSet(ResultSet rs) throws SQLException, ClassNotFoundException {
+
         if (!rs.next()) {
             return null;
-        } else {
-
-            Long id = rs.getLong(1);
-            String title = rs.getString(2);
-            String description = rs.getString(3);
-            Collection<Answer> correctAnswers = new HashSet<>();
-            ResultSet resultSet = executeStatement(GET_ANSWERS_SQL, id);
-            while (resultSet.next()) {
-                Long idAnswer = rs.getLong(1);
-                String text = rs.getString(2);
-                correctAnswers.add(new Answer(idAnswer, text));
-            }
-            return new Question(id, title, description, correctAnswers);
         }
+
+        long id = rs.getLong(ID_COLUMN);
+
+        String title = rs.getString(TITLE_COLUMN);
+
+        String description = rs.getString(DESCRIPTION_COLUMN);
+
+        QuestionAnswerDAO questionAnswerDAO = new QuestionAnswerDAO();
+
+        Collection<QuestionAnswer> collection;
+
+        collection = questionAnswerDAO.getQuestionAnswersByQuestionId(id);
+
+        return new Question(id, title, description, collection);
+
     }
 
-    public Question getQuestionByTitle(String title) throws SQLException{
-        ResultSet rs = executeStatement(GET_QUESTION_SQL, title);
-        try {
-            return getQuestionFromRS(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            rs.close();
-        }
-        return null;
+    /**
+     * Gets question from db by title.
+     *
+     * @param title
+     * @return question from database, or null if not found
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    public Question getQuestionByTitle(String title) throws SQLException, ClassNotFoundException {
+
+        ResultSet rs = executeQuery(GET_QUESTION_SQL, title);
+        return (Question) parseResultSet(rs);
+
     }
 
-    public boolean checkIfAlready(String title) throws SQLException{
+    /**
+     * This method check if the question stored already in db by title.
+     *
+     * @param title
+     * @return true if question with this title is already stored in db, false otherwise
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    public boolean checkIfAlreadyExist(String title) throws SQLException, ClassNotFoundException{
         Question question = getQuestionByTitle(title);
         if(question == null){
             return false;
@@ -66,26 +87,38 @@ public class QuestionDAO extends BaseDAO{
             return true;
     }
 
-    public void createQuestion (Question question) throws SQLException{
+    /**
+     * This method adding question in db.
+     *
+     * @param question to add in db
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    public void createQuestion (Question question) throws SQLException, ClassNotFoundException{
         executeUpdate(CREATE_QUESTION_SQL, question.getId(), question.getTitle(), question.getDescription());
-        Iterator iterator = question.getCorrectAnswer().iterator();
+        Iterator iterator = question.getAnswers().iterator();
         while (iterator.hasNext()) {
-            Answer answer = (Answer) iterator.next();
-            executeUpdate(CREATE_ANSWER_SQL, answer.getId(), answer.getText(), question.getId());
+            QuestionAnswer answer = (QuestionAnswer) iterator.next();
+            executeUpdate(CREATE_QUESTION_ANSWER_SQL, answer.getId(), answer.getQuestionId(), answer.getAnswerId(), answer.isCorrect());
         }
     }
 
-    public void updateQuestion(String title, String description, Long id, Collection<Answer> answers) throws SQLException{
+    /**
+     * This method updating question in db.
+     *
+     * @param title
+     * @param description
+     * @param id
+     * @param answers
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    public void updateQuestion (String title, String description, Long id, Collection<QuestionAnswer> answers) throws SQLException, ClassNotFoundException{
         executeUpdate(UPDATE_QUESTION_SQL, title, description, id);
-        executeUpdate("DELETE FROM \"answers\" WHERE forKey = " + id);
         Iterator iterator = answers.iterator();
         while (iterator.hasNext()){
-            Answer answer = (Answer) iterator.next();
-            executeUpdate(CREATE_ANSWER_SQL, answer.getId(), answer.getText(), id);
+            QuestionAnswer answer = (QuestionAnswer) iterator.next();
+            executeUpdate(UPDATE_QUESTION_ANSWER_SQL, answer.getId(), answer.isCorrect(), id);
         }
-    }
-
-    public void deleteFromTable(String name) throws SQLException{
-        executeUpdate("DELETE FROM " + name);
     }
 }
