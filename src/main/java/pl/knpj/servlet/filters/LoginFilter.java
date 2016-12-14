@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by Domino on 01.12.2016.
  */
-@WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
+//@WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
     public void destroy() {
     }

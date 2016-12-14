@@ -1,9 +1,11 @@
 package pl.knpj.servlet.model;
 
+import java.io.Serializable;
+
 /**
  * Created by rpi on 24.11.16.
  */
-public class User {
+public class User implements Serializable {
 
     private Long id;
 
