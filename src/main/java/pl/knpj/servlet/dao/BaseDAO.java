@@ -53,13 +53,10 @@ public abstract class BaseDAO {
             rs = stmt.executeQuery();
 
             return rs;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
 
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-
-            throw e;
-        } catch (ClassNotFoundException e) {
 
             throw e;
         } finally {
@@ -92,13 +89,10 @@ public abstract class BaseDAO {
             LOGGER.log(Level.INFO, stmt.toString());
 
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
 
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-
-            throw e;
-        } catch (ClassNotFoundException e) {
 
             throw e;
         } finally {
