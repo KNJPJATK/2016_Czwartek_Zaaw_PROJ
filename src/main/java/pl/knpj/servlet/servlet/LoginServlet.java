@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Login servlet for handling login requests.
@@ -37,9 +40,13 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("user", user);
                 }
 
-                req.setAttribute("username", "Ala ma kota :)");
+//                req.setAttribute("username", "Ala ma kota :)");
 
-                req.getRequestDispatcher("hello.jsp").forward(req, resp);
+                List quizList = Arrays.asList("quiz1", "quiz2", "quiz3", "quiz4");
+
+                req.setAttribute("quizList", quizList);
+
+                req.getRequestDispatcher("index.jsp").forward(req, resp);
             }
         } catch (Exception e) {
             e.printStackTrace(); //TODO
