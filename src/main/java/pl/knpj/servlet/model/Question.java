@@ -62,12 +62,13 @@ public class Question {
                 ! answers.isEmpty())
         {
             buildAnswers.delete(0, buildAnswers.length());
-            Iterator answersIterator = answers.iterator();
-            buildAnswers.append(answersIterator.next().toString());
-            while (answersIterator.hasNext()) {
+
+            for (QuestionAnswer questionAnswer : answers) {
+                buildAnswers.append(questionAnswer.toString());
                 buildAnswers.append(", ");
-                buildAnswers.append(answersIterator.next().toString());
             }
+
+            buildAnswers.delete(buildAnswers.length() - 2, buildAnswers.length());
         }
 
         return "Question{" +
