@@ -78,7 +78,7 @@ public class QuestionDAO extends BaseDAO {
      * @throws SQLException
      * @throws ClassNotFoundException no database driver found
      */
-    public boolean checkIfAlreadyExist(String title) throws SQLException, ClassNotFoundException{
+    public boolean checkIfQuestionWithTitleExists (String title) throws SQLException, ClassNotFoundException{
         Question question = getQuestionByTitle(title);
         if(question == null){
             return false;

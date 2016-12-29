@@ -1,9 +1,11 @@
 package pl.knpj.servlet.model;
 
+import java.io.Serializable;
+
 /**
  * Associative class between Question and Answer.
  */
-public class QuestionAnswer {
+public class QuestionAnswer implements Serializable {
 
     private Long id;
     private Long questionId;

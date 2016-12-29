@@ -1,12 +1,13 @@
 package pl.knpj.servlet.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
 /**
  * Answer POJO
  */
-public class Answer {
+public class Answer implements Serializable {
 
     private Long id;
     private String text;

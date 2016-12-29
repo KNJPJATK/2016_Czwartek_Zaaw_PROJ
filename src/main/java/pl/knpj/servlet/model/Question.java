@@ -1,11 +1,12 @@
 package pl.knpj.servlet.model;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Question POJO
  */
-public class Question {
+public class Question implements Serializable {
 
     private Long id;
     private String title;
