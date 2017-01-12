@@ -36,7 +36,7 @@ public abstract class BaseDAO {
      * @throws SQLException
      * @throws ClassNotFoundException no database driver found
      */
-    protected Object executeQuery(String sql, Object... params) throws SQLException, ClassNotFoundException {
+    protected ResultSet executeQuery(String sql, Object... params) throws SQLException, ClassNotFoundException {
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -52,14 +52,11 @@ public abstract class BaseDAO {
 
             rs = stmt.executeQuery();
 
-            return parseResultSet(rs);
-        } catch (SQLException e) {
+            return rs;
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
 
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-
-            throw e;
-        } catch (ClassNotFoundException e) {
 
             throw e;
         } finally {
@@ -70,12 +67,61 @@ public abstract class BaseDAO {
     }
 
     /**
+     * Method used to execute update on database.
+     *
+     * @param sql db query to execute by prepared statement
+     * @param params parameters for query
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    protected void executeUpdate (String sql, Object... params) throws SQLException, ClassNotFoundException {
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = makeConnection();
+            stmt = con.prepareStatement(sql);
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i+1, params[i]);
+            }
+
+            LOGGER.log(Level.INFO, stmt.toString());
+
+            stmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+
+            throw e;
+        } finally {
+            DbUtils.closeQuietly(stmt);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    /**
+     * Method to get Object from db by query SQL
+     *
+     * @param sql db query to execute by prepared statement
+     * @param params parameters for query
+     * @return Object from db
+     * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
+     */
+    protected Object getObjectFromQuery (String sql, Object... params) throws SQLException, ClassNotFoundException {
+        ResultSet rs = executeQuery(sql, params);
+        return parseResultSet(rs);
+    }
+
+    /**
      * Method to parse object from {@link ResultSet}
      *
      * @param rs result set to parse
      * @return parsed object
      * @throws SQLException
+     * @throws ClassNotFoundException no database driver found
      */
-    protected abstract Object parseResultSet(ResultSet rs) throws SQLException;
-
+    protected abstract Object parseResultSet(ResultSet rs) throws SQLException, ClassNotFoundException;
 }

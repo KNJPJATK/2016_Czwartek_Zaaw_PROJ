@@ -26,7 +26,7 @@ public class UserDAO extends BaseDAO {
      */
     public User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
 
-        return (User) executeQuery(GET_USER_USERNAME_SQL, username);
+        return (User) getObjectFromQuery(GET_USER_USERNAME_SQL, username);
     }
 
 
