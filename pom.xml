@@ -29,7 +29,6 @@
             <artifactId>commons-dbutils</artifactId>
             <version>1.6</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -47,183 +46,12 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.6.Final</version>
+        </dependency>
     </dependencies>
-
-    <properties>
-        <db.name>quizowanie</db.name>
-        <db.dropDbSql>DROP DATABASE IF EXISTS ${db.name}</db.dropDbSql>
-        <db.createDb>CREATE DATABASE ${db.name}</db.createDb>
-        <db.createSchemaFilePath>src/main/resources/db_scripts/createDB.sql</db.createSchemaFilePath>
-        <db.mvn_phase>test</db.mvn_phase>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>mysql</id>
-
-            <properties>
-                <db.mysql.baseUrl>jdbc:mysql://127.0.0.1:3306/</db.mysql.baseUrl>
-                <!--<![CDATA is used to escape all xml special characters - it says that this is character data-->
-                <!--unfortunately there is issue with timezone an mysql so we need to set it manually-->
-                <db.mysql.timezone_params>
-                    <![CDATA[?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC]]>
-                </db.mysql.timezone_params>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <version>1.5</version>
-
-                        <dependencies>
-                            <dependency>
-                                <groupId>mysql</groupId>
-                                <artifactId>mysql-connector-java</artifactId>
-                                <version>6.0.3</version>
-                            </dependency>
-                        </dependencies>
-
-                        <configuration>
-                            <driver>com.mysql.cj.jdbc.Driver</driver>
-                            <url>
-                                ${db.mysql.baseUrl}${db.mysql.timezone_params}
-                            </url>
-
-                            <username>${db.user}</username>
-                            <password>${db.password}</password>
-                            <settingsKey>sensibleKey</settingsKey>
-                        </configuration>
-
-                        <!--what will be executed-->
-                        <executions>
-                            <execution>
-                                <id>drop-table</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>${db.dropDbSql}</sqlCommand>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>create-db</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>${db.createDb}</sqlCommand>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>create-schema</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-
-                                <configuration>
-                                    <url>${db.mysql.baseUrl}${db.name}${db.mysql.timezone_params}</url>
-                                    <autocommit>true</autocommit>
-                                    <srcFiles>
-                                        <srcFile>${db.createSchemaFilePath}</srcFile>
-                                    </srcFiles>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>postgresql</id>
-
-            <properties>
-                <db.postgres.baseUrl>jdbc:postgresql://localhost:5432/</db.postgres.baseUrl>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <version>1.5</version>
-
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>9.4.1211.jre7</version>
-                            </dependency>
-                        </dependencies>
-
-                        <configuration>
-                            <driver>org.postgresql.Driver</driver>
-                            <url>${db.postgres.baseUrl}</url>
-                            <username>${db.user}</username>
-                            <password>${db.password}</password>
-                            <settingsKey>sensibleKey</settingsKey>
-                        </configuration>
-
-                        <!--what will be executed-->
-                        <!--drop old database if exists-->
-                        <executions>
-                            <execution>
-                                <id>drop-table</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <url>${db.postgres.baseUrl}</url>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>${db.dropDbSql}</sqlCommand>
-                                </configuration>
-                            </execution>
-
-                            <!--create new database-->
-                            <execution>
-                                <id>create-db</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <url>${db.postgres.baseUrl}</url>
-                                    <autocommit>true</autocommit>
-                                    <sqlCommand>${db.createDb}</sqlCommand>
-                                </configuration>
-                            </execution>
-
-                            <!--create tables-->
-                            <execution>
-                                <id>create-schema</id>
-                                <phase>${db.mvn_phase}</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <url>${db.postgres.baseUrl}${db.name}</url>
-                                    <autocommit>true</autocommit>
-                                    <srcFiles>
-                                        <srcFile>${db.createSchemaFilePath}</srcFile>
-                                    </srcFiles>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <build>
         <finalName>quizowanie</finalName>
@@ -231,7 +59,20 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    **/*.xml
+                </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
