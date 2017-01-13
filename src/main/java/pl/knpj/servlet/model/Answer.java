@@ -1,22 +1,32 @@
 package pl.knpj.servlet.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Answer POJO
  */
+@Entity
+@NamedQueries(
+        @NamedQuery(name = "SELECT_ANSWER_BY_ID", query = "SELECT a FROM Answer a WHERE a.id = ?")
+)
 public class Answer implements Serializable {
 
+    @Id
     private Long id;
+
+    @Column(length = 500, nullable = false)
     private String text;
-    private Collection<QuestionAnswer> questions;
+
+    @ManyToMany
+    @JoinColumn(nullable = false)
+    private List<Question> questions;
 
     public Answer(){
     }
 
-    public Answer(Long id, String text, Collection<QuestionAnswer> questions) {
+    public Answer(Long id, String text, List<Question> questions) {
         this.id = id;
         this.text = text;
         this.questions = questions;
@@ -30,7 +40,7 @@ public class Answer implements Serializable {
         return text;
     }
 
-    public Collection<QuestionAnswer> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
@@ -42,31 +52,16 @@ public class Answer implements Serializable {
         this.text = text;
     }
 
-    public void setQuestions(Collection<QuestionAnswer> questions) {
+    public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 
     @Override
     public String toString() {
-
-        StringBuilder buildQuestions = new StringBuilder("\'Is empty\'");
-        if(questions != null &&
-                ! questions.isEmpty())
-        {
-            buildQuestions.delete(0, buildQuestions.length());
-
-            for(QuestionAnswer questionAnswer : questions){
-                buildQuestions.append(questionAnswer.toString());
-                buildQuestions.append(", ");
-            }
-
-            buildQuestions.delete(buildQuestions.length() - 2, buildQuestions.length());
-        }
-
         return "Answer{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                " questions: " + buildQuestions.toString() +
+                ", questions=" + questions +
                 '}';
     }
 }

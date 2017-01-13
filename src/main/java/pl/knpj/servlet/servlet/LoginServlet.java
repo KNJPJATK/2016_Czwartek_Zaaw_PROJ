@@ -36,11 +36,9 @@ public class LoginServlet extends HttpServlet {
 
                 HttpSession session = req.getSession(true);
 
-                if (session.isNew()) {
+                if (session.getAttribute("user") == null) {
                     session.setAttribute("user", user);
                 }
-
-//                req.setAttribute("username", "Ala ma kota :)");
 
                 List quizList = Arrays.asList("quiz1", "quiz2", "quiz3", "quiz4");
 
