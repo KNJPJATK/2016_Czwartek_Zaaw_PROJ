@@ -1,0 +1,23 @@
+Maven settings are your local computer maven settings which are used to configure maven.
+We will use them to add your custom database username and password. :)
+
+To use local maven settings you need to put settings.xml file (example is attached) into ${user.home}/.m2/ directory.
+
+To change database driver, url, username and password you need to simply modify properties "db.username" and "db.password".
+
+Example: (check example included)
+<settings>
+[...]
+    <db.driver-class>here insert db driver class</db.driver-class>
+    <db.url>url for your db</db.url>
+    <db.username>customUsername</db.username>
+    <db.password>customPassword</db.password>
+[...]
+</settings>
+
+-------------------------
+Please do not change the names of the properties!
+We use them in our pom.xml and will stop working properly.
+-------------------------
+
+I have included settings.xml with default settings to mysql and postgres db.

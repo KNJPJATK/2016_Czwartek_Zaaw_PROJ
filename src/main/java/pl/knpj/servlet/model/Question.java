@@ -1,35 +1,22 @@
 package pl.knpj.servlet.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 
 /**
  * Question POJO
  */
-@Entity
-@NamedQueries(
-        @NamedQuery(name = "SELECT_QUESTION_BY_TITLE", query = "SELECT q FROM Question q WHERE q.title = ?")
-)
 public class Question implements Serializable {
 
-    @Id
     private Long id;
-
-    @Column(unique = true, nullable = false)
     private String title;
-
-    @Lob
     private String description;
-
-    @ManyToMany
-    @JoinColumn(nullable = false)
-    private List<Answer> answers;
+    private Collection<QuestionAnswer> answers;
 
     public Question () {
     }
 
-    public Question(Long id, String title, String description, List<Answer> answers) {
+    public Question(Long id, String title, String description, Collection<QuestionAnswer> answers) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,7 +35,7 @@ public class Question implements Serializable {
         return description;
     }
 
-    public List<Answer> getAnswers() {
+    public Collection<QuestionAnswer> getAnswers() {
         return answers;
     }
 
@@ -64,17 +51,32 @@ public class Question implements Serializable {
         this.description = description;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(Collection<QuestionAnswer> answers) {
         this.answers = answers;
     }
 
     @Override
     public String toString() {
+
+        StringBuilder buildAnswers = new StringBuilder("\'Is empty\'");
+        if(answers != null &&
+                ! answers.isEmpty())
+        {
+            buildAnswers.delete(0, buildAnswers.length());
+
+            for (QuestionAnswer questionAnswer : answers) {
+                buildAnswers.append(questionAnswer.toString());
+                buildAnswers.append(", ");
+            }
+
+            buildAnswers.delete(buildAnswers.length() - 2, buildAnswers.length());
+        }
+
         return "Question{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", answers=" + answers +
+                ", title = '" + title + '\'' +
+                ", description = '" + description + '\'' +
+                ", answers : " + buildAnswers.toString() +
                 '}';
     }
 }

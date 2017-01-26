@@ -2,13 +2,21 @@ package pl.knpj.servlet.dao;
 
 import pl.knpj.servlet.model.User;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * DAO class for retrieving data from vuser table
  */
 public class UserDAO extends BaseDAO {
+
+    private static final String ID_COLUMN = "id";
+    private static final String USERNAME_COLUMN = "username";
+    private static final String PASSWORD_COLUMN = "password";
+
+    private static final String GET_USER_USERNAME_SQL =
+            "SELECT id as 'id', username as 'username', password as 'password' " +
+                    "FROM vuser where username = ?";
 
     /**
      * Gets user from db by username.
@@ -16,12 +24,9 @@ public class UserDAO extends BaseDAO {
      * @param username
      * @return user from database, or null if not found
      */
-    public User getUserByUsername(String username) {
-        List<User> users = executeNamedQuery("GET_USER_BY_USERNAME", User.class, username);
-        if (users.size() != 1) {
-            return null;
-        }
-        return users.get(0);
+    public User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
+
+        return (User) getObjectFromQuery(GET_USER_USERNAME_SQL, username);
     }
 
 
@@ -41,4 +46,20 @@ public class UserDAO extends BaseDAO {
         return (user.getPassword().equals(password));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected Object parseResultSet(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+            return null;
+        }
+
+        long id = rs.getLong(ID_COLUMN);
+        String username = rs.getString(USERNAME_COLUMN);
+        String password = rs.getString(PASSWORD_COLUMN);
+
+        User user = new User(id, username, password);
+
+        return user;
+    }
 }

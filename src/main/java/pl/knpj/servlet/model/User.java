@@ -1,25 +1,16 @@
 package pl.knpj.servlet.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by rpi on 24.11.16.
  */
-@Entity
-@Table(name = "vuser")
-@NamedQueries(
-        @NamedQuery(name = "GET_USER_BY_USERNAME", query = "SELECT u FROM User u WHERE u.username = ?")
-)
 public class User implements Serializable {
 
-    @Id
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
     public User() {

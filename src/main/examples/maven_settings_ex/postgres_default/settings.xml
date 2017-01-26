@@ -1,0 +1,22 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <profiles>
+        <profile>
+            <id>base-profile</id>
+            <properties>
+                <db.driver-class>org.postgresql.Driver</db.driver-class>
+                <db.url>jdbc:postgresql://localhost:5432/quizowanie</db.url>
+                <db.user>postgres</db.user>
+                <db.password>postgres</db.password>
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>base-profile</activeProfile>
+    </activeProfiles>
+
+</settings>
